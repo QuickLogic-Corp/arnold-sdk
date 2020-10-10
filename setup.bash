@@ -3,7 +3,7 @@
 #
 # Script to setup pulp tool chain
 #
-LOGFILE=setup.log
+LOGFILE:=${PWD}/setup.log
 
 echo "Arnold tool chain installation" |& tee ${LOGFILE}
 
@@ -50,7 +50,9 @@ rm -rf pulp-riscv-gnu-toolchain
 git clone --recursive https://github.com/pulp-platform/pulp-riscv-gnu-toolchain.git &>> ${LOGFILE}
 
 pushd pulp-riscv-gnu-toolchain &>> ${LOGFILE}
+echo "+++++++++++++++configure" |& tee --append ${LOGFILE}
 ./configure --prefix=/opt/riscv --with-arch=rv32imc --with-cmodel=medlow --enable-multilib &>> ${LOGFILE}
+echo "---------------make" |& tee --append ${LOGFILE}
 sudo make &>> ${LOGFILE}
 popd &>> ${LOGFILE}
 export PULP_RISCV_GCC_TOOLCHAIN=/opt/riscv
