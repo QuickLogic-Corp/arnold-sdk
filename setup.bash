@@ -3,7 +3,7 @@
 #
 # Script to setup pulp tool chain
 #
-LOGFILE:=${PWD}/setup.log
+LOGFILE=${PWD}/setup.log
 
 echo "Arnold tool chain installation" |& tee ${LOGFILE}
 
