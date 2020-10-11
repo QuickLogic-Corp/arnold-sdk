@@ -3,6 +3,7 @@
 #
 # Script to setup pulp tool chain
 #
+# make bsolute, otherwise parts end up in the subdirectories
 LOGFILE=${PWD}/setup.log
 
 echo "Arnold tool chain installation" |& tee ${LOGFILE}
