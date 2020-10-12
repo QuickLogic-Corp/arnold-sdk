@@ -1,13 +1,8 @@
 
-#if defined(__riscv__)
-	#error "RV"
-#endif
 
 #include <stdio.h>
-#include "fc_config.h"
-#if defined(__riscv__)
-	#error "RV"
-#endif
+//#include "fc_config.h"
+
 #include "hal/pulp.h"
 #include "gpio.h"
 

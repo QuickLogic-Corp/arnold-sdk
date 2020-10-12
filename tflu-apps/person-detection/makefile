@@ -24,7 +24,7 @@ CCFLAGS +=  -std=c11   -DTF_LITE_STATIC_MEMORY -DNDEBUG -O3 -D__riscv__y -mfdiv 
 
 LDFLAGS += -D__riscv__ -MMD -MP -lbench -nostartfiles -nostdlib -Wl,--gc-sections -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/rules -T/mnt/hgfs/Documents/ActiveProjects/arnold/arnold/link.ld -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold/arnold -lrt -lrtio -lrt -lgcc -lm
 
-include tensorflow/tensorflow/lite/micro/tools/make/targets/quicklogic-arnold_makefile.inc
+include  ${TENSORFLOWHOME}/tensorflow/lite/micro/tools/make/targets/quicklogic-arnold_makefile.inc
 
 LDFLAGS = -D__riscv__ -MMD -MP -lbench -nostartfiles -nostdlib -Wl,--gc-sections -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/rules -T/mnt/hgfs/Documents/ActiveProjects/arnold/arnold/link.ld -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold/arnold -lrt -lrtio -lrt -lgcc -lm
 LDFLAGS += \
@@ -41,9 +41,9 @@ LDFLAGS += \
 	-lrtio\
 	-lrt\
 	-lgcc
-PRJ_ROOT = ${TENSORFLOWHOME}/tensorflow/tensorflow/lite/micro/tools/make/gen/quicklogic-arnold_rv32imfcxpulpv2/prj
+PRJ_ROOT = ${TENSORFLOWHOME}/tensorflow/lite/micro/tools/make/gen/quicklogic-arnold_rv32imfcxpulpv2/prj
 BUILD_DIR = ~/ETH/TRY5/arnold/pulp-builder/pulp-rt-examples/arnold_tests/new_example/build
-TFLM_DIR = ${TENSORFLOWHOME}/tensorflow/tensorflow/lite/micro
+TFLM_DIR = ${TENSORFLOWHOME}/tensorflow/lite/micro
 
 current: run_person_detection_test
 
@@ -51,9 +51,11 @@ current: run_person_detection_test
 ###### START person_detection_benchmark ############
 EXAMPLE = person_detection_test
 run_${EXAMPLE}:	$(PRJ_ROOT)/${EXAMPLE}/make/${EXAMPLE}
-		cp $< ${BUILD_DIR}/arnold/test
-		#cp $< $<.elf .
-		/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/ws/bin/pulp-run\
+		echo "## running ${EXAMPLE}"
+		echo "* copy the app from the generated project to here"
+		cp $< .
+		echo "* run it"
+		${PULP_BUILDER}/install/ws/bin/pulp-run\
 			--config-file=arnold@config_file=chips/arnold/arnold.json\
 			--config-opt=platform=board\
 			--config-opt=rt/start-all=true\
@@ -62,8 +64,8 @@ run_${EXAMPLE}:	$(PRJ_ROOT)/${EXAMPLE}/make/${EXAMPLE}
 			--config-opt=rt/start-all=true\
 			--config-opt=**/rt/fc-start=true\
 			--config-opt=**/rt/type=pulp-rt\
-			--dir=/home/gmartin/ETH/TRY5/arnold/pulp-builder/pulp-rt-examples/arnold_tests/new_example/build/arnold\
-			--binary=test/$(<F)
+			--dir=${pwd}\
+			--binary=$(<F)
 
 ##########################################################################
 #
@@ -77,16 +79,15 @@ run_${EXAMPLE}:	$(PRJ_ROOT)/${EXAMPLE}/make/${EXAMPLE}
 $(PRJ_ROOT)/${EXAMPLE}/make/${EXAMPLE}:	${PRJ_ROOT}/${EXAMPLE} ${TFLM_DIR}/quicklogic-arnold/person_detection_test.cc ${TFLM_DIR}/quicklogic-arnold/fll.cc ${TFLM_DIR}/quicklogic-arnold/gpio.cc\
 																				${TFLM_DIR}/quicklogic-arnold/micro_interpreter.cc ${TFLM_DIR}/quicklogic-arnold/conv.cc\
 																				${TFLM_DIR}/quicklogic-arnold/conv.h
+		echo "## building generated project"
+		echo "* copy arnold specific source files into generated project"
 		cp ${TFLM_DIR}/quicklogic-arnold/person_detection_test.cc ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/micro/examples/person_detection
 		cp ${TFLM_DIR}/quicklogic-arnold/* ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/micro/quicklogic-arnold
 		cp ${TFLM_DIR}/quicklogic-arnold/conv.cc ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/micro/kernels
 		cp ${TFLM_DIR}/quicklogic-arnold/conv.h ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/kernels/internal/reference
-		#sed s/-O3// ${PRJ_ROOT}/${EXAMPLE}/make/makefile.orig > ${PRJ_ROOT}/${EXAMPLE}/make/makefile
-		#-make --directory=${PRJ_ROOT}/${EXAMPLE}/make all
-		#sed s/-O3/-O3/ ${PRJ_ROOT}/${EXAMPLE}/make/makefile.orig > ${PRJ_ROOT}/${EXAMPLE}/make/makefile
-		#rm ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/micro/micro_error_reporter.o
-		#rm ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/core/api/error_reporter.o
+		echo "* make the generated app"
 		make --directory=${PRJ_ROOT}/${EXAMPLE}/make all
+		echo "-------------app built"
         
 ##################################
 # 
@@ -97,8 +98,10 @@ $(PRJ_ROOT)/${EXAMPLE}/make/${EXAMPLE}:	${PRJ_ROOT}/${EXAMPLE} ${TFLM_DIR}/quick
 #
 ###################################
 $(PRJ_ROOT)/${EXAMPLE}:
+		echo "## Generating tensorflow project"
 		make --directory=${TENSORFLOWHOME} -f tensorflow/lite/micro/tools/make/Makefile generate_${EXAMPLE}_make_project TARGET=quicklogic-arnold
-		cp ${PRJ_ROOT}/${EXAMPLE}/make/makefile ${PRJ_ROOT}/${EXAMPLE}/make/makefile.orig
+		cp ${PRJ_ROOT}/${EXAMPLE}/make/Makefile ${PRJ_ROOT}/${EXAMPLE}/make/Makefile.orig
+		echo "---------------project generated"
 
 
 
@@ -122,7 +125,7 @@ ${PRJ_ROOT}/generate_person_detection_test_int8_make_project:
 	make --directory=../tf-arnold -f tensorflow/lite/micro/tools/make/Makefile generate_person_detection_test_int8_make_project TARGET=quicklogic-arnold
 
 clean:
-	rm -rf ../tf-arnold/tensorflow/lite/micro/tools/make/gen/quicklogic-arnold_rv32imfcxpulpv2
+	rm -rf ${PRJ_ROOT}/${EXAMPLE}
   
 
 %.o: %.cc

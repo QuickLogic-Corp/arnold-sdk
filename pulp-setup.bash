@@ -12,3 +12,4 @@ source configs/arnold.sh
 source configs/board.sh
 source sdk-setup.sh
 export PULPRT_HOME=$PWD/pulp-rules
+popd
