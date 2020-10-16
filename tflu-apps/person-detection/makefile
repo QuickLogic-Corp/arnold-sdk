@@ -19,14 +19,62 @@ RM = rm -f
 ARFLAGS := -csr
 
 
-CXXFLAGS += -std=c++11 -DTF_LITE_STATIC_MEMORY -DNDEBUG -O3 -D__riscv__y -mfdiv -fdata-sections -ffunction-sections -MMD -MP -DTF_LITE_MCU_DEBUG_LOG -DTF_LITE_USE_GLOBAL_CMATH_FUNCTIONS -DTF_LITE_USE_GLOBAL_MAX -DTF_LITE_USE_GLOBAL_MIN -fpermissive -fno-rtti -fno-exceptions --std=gnu++11 -I. -I./third_party/gemmlowp -I./third_party/flatbuffers/include -I./third_party/ruy -I./third_party/kissfft
-CCFLAGS +=  -std=c11   -DTF_LITE_STATIC_MEMORY -DNDEBUG -O3 -D__riscv__y -mfdiv -fdata-sections -ffunction-sections -MMD -MP -I. -I./third_party/gemmlowp -I./third_party/flatbuffers/include -I./third_party/ruy -I./third_party/kissfft
+CXXFLAGS += -std=c++11\
+	-DTF_LITE_STATIC_MEMORY\
+	-DNDEBUG\
+	-march=rv32imfcxpulpv2\
+	-mfdiv\
+	-D__riscv__\
+	-O3\
+	-g\
+	-fdata-sections\
+	-ffunction-sections\
+	-MMD\
+	-MP -DTF_LITE_MCU_DEBUG_LOG -DTF_LITE_USE_GLOBAL_CMATH_FUNCTIONS -DTF_LITE_USE_GLOBAL_MAX -DTF_LITE_USE_GLOBAL_MIN\
+	-fpermissive\
+	-fno-rtti\
+	-fno-exceptions\
+	--std=gnu++11\
+	-I${PULP_SDK_HOME}/install/include/io\
+	-I${PULP_SDK_HOME}/install/include\
+	-I${PULP_SDK_HOME}/pulp-rt/include\
+	-include fconfig.h\
+	-I. -I./third_party/gemmlowp -I./third_party/flatbuffers/include -I./third_party/ruy -I./third_party/kissfft
+CCFLAGS +=  -std=c11\
+   -DTF_LITE_STATIC_MEMORY\
+   -DNDEBUG -O3 -D__riscv__y -mfdiv -fdata-sections -ffunction-sections -MMD -MP\
+   -I.\
+    -I./third_party/kissfft\
+   -I./third_party/gemmlowp\
+   -I./third_party/flatbuffers/include\
+   -I./third_party/ruy\
+   -I${PULP_SDK_HOME}/install/include/io\
+	-I${PULP_SDK_HOME}/install/include\
+	-I${PULP_SDK_HOME}/pulp-rt/include\
 
-LDFLAGS += -D__riscv__ -MMD -MP -lbench -nostartfiles -nostdlib -Wl,--gc-sections -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/rules -T/mnt/hgfs/Documents/ActiveProjects/arnold/arnold/link.ld -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold/arnold -lrt -lrtio -lrt -lgcc -lm
+LDFLAGS +=\
+	-D__riscv__ \
+	-MMD\
+	-MP\
+	-lbench\
+	-nostartfiles\
+	-nostdlib\
+	-Wl,--gc-sections\
+	-L${PULP_SDK_HOME}/install/rules\
+	-T/mnt/hgfs/Documents/ActiveProjects/arnold/arnold/link.ld\
+	-L${PULP_SDK_HOME}/install/lib/arnold\
+	-L${PULP_SDK_HOME}/install/lib/arnold/arnold\
+	-lrt\
+	-lrtio\
+	-lrt\
+	-lgcc\
+	-lm
 
 include  ${TENSORFLOWHOME}/tensorflow/lite/micro/tools/make/targets/quicklogic-arnold_makefile.inc
 
-LDFLAGS = -D__riscv__ -MMD -MP -lbench -nostartfiles -nostdlib -Wl,--gc-sections -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/rules -T/mnt/hgfs/Documents/ActiveProjects/arnold/arnold/link.ld -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold/arnold -lrt -lrtio -lrt -lgcc -lm
+LDFLAGS = -D__riscv__ -MMD -MP -lbench -nostartfiles -nostdlib -Wl,--gc-sections -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/rules\
+	-T/mnt/hgfs/Documents/ActiveProjects/arnold/arnold/link.ld\
+	-L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold -L/home/gmartin/ETH/TRY5/arnold/pulp-builder/install/lib/arnold/arnold -lrt -lrtio -lrt -lgcc -lm
 LDFLAGS += \
 	-MMD\
 	-MP\
