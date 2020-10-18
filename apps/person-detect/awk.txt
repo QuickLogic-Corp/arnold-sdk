@@ -1,0 +1,31 @@
+/__irqvector_start/     { print $1 "    " $2; }
+/__irqvector_end/       { print $1 "    " $2; }
+/_stext/                { print $1 "    " $2;}
+/_etext/                { print $1 "    " $2;}
+/__fini_array_start/    { print $1 "    " $2;}
+/__fini_array_end/      { print $1 "    " $2;}
+/__boot_start/          { print $1 "    " $2;}
+/__boot_end/            { print $1 "    " $2;}
+/__bss_start/           { tmp = $1; sub("0x00000000", "0x", tmp); __bss_start = strtonum(tmp)}
+/__bss_end/             { tmp = $1; sub("0x00000000", "0x", tmp); __bss_end = strtonum(tmp); __bss_len = __bss_end-__bss_start; print __bss_len "    " "__bss_len"}
+/__data_start/          { tmp = $1; sub("0x00000000", "0x", tmp); __data_start = strtonum(tmp)}
+/__data_end/            { tmp = $1; sub("0x00000000", "0x", tmp); __data_end = strtonum(tmp); __data_len = __data_end-__data_start; print __data_len "    " "__data_len"}
+/__rodata_start/        { tmp = $1; sub("0x00000000", "0x", tmp); __rodata_start = strtonum(tmp)}
+/__rodata_end/          { tmp = $1; sub("0x00000000", "0x", tmp); __rodata_end = strtonum(tmp); __rodata_len = __rodata_end-__rodata_start; print __rodata_len "    " "__rodata_len"}
+/__stack_start/         { print $1 "    " $2;}
+/__stack_end/           { print $1 "    " $2;}
+/__got_start/           { print $1 "    " $2;}
+/__got_end/             { print $1 "    " $2;}
+/__l2data_start/        { print $1 "    " $2;}
+/__l2data_end/          { print $1 "    " $2;}
+/__shbss_start/         { print $1 "    " $2;}
+/__shbss_end/           { print $1 "    " $2;}
+
+/priv0/                 { print $1 "    " $2;}
+
+END {
+
+    printf "%-16s 0x%08x 0x%08x 0x%08x\n", "__rodata", __rodata_start, __rodata_end, __rodata_len;
+    printf "%-16s 0x%08x 0x%08x 0x%08x\n", "__data", __data_start, __data_end, __data_len;
+    printf "%-16s 0x%08x 0x%08x 0x%08x\n", "__bss", __bss_start, __bss_end, __bss_len;
+    }
