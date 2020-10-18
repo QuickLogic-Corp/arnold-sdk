@@ -6,6 +6,8 @@
 # make bsolute, otherwise parts end up in the subdirectories
 LOGFILE=${PWD}/just_pulp.log
 
+set -e
+
 echo "Arnold pulp-builder installation" |& tee ${LOGFILE}
 
 ######################################
@@ -24,8 +26,8 @@ echo Y | sudo apt-get install autoconf automake autotools-dev curl\
 #
 # for some reason combining into one call to pip3 does not work for numpy and elftools
 #
-echo "+++++++++++++++install elftools" |& tee --append ${LOGFILE}
-pip3 install elftools &>> ${LOGFILE}
+echo "+++++++++++++++install pyelftools" |& tee --append ${LOGFILE}
+pip3 install pyelftools &>> ${LOGFILE}
 echo "---------------install setuptools" |& tee --append ${LOGFILE}
 pip3 install setuptools &>> ${LOGFILE}
 echo "---------------install prettytable" |& tee --append ${LOGFILE}
@@ -57,6 +59,8 @@ pushd pulp-builder &>> ${LOGFILE}
 echo "* checkout arnold" |& tee --append ${LOGFILE}
 git checkout arnold &>> ${LOGFILE}
 source configs/arnold.sh &>> ${LOGFILE}
+source configs/board.sh &>> ${LOGFILE}git checkout arnold &>> ${LOGFILE}
+source configs/arnold.sh &>> ${LOGFILE}
 source configs/board.sh &>> ${LOGFILE}
 echo "-------------------------./scripts/update-runtime" |& tee --append ${LOGFILE}
 ./scripts/update-runtime &>> ${LOGFILE}
@@ -64,12 +68,17 @@ echo "-------------------------./scripts/build-runtime" |& tee --append ${LOGFIL
 ./scripts/build-runtime &>> ${LOGFILE}
 popd &>> ${LOGFILE}
 
+#
+# Install patches (overrides that we have not upstreamed)
+#
+echo "---------------------------install patches" |& tee --append ${LOGFILE}
+pushd patches &>> ${LOGFILE}
+bash patch.bash |& tee --append ${LOGFILE}
+popd &>> ${LOGFILE}
+
 
 pushd pulp-builder &>> ${LOGFILE}
-echo"" |& tee --append ${LOGFILE}
-echo"" |& tee --append ${LOGFILE}
-echo"" |& tee --append ${LOGFILE}
-echo "----------------------sdk-setup.sh" |& tee --append ${LOGFILE}
+
 source sdk-setup.sh &>> ${LOGFILE}
 export PULPRT_HOME=$PWD/pulp-rules
 popd &>> ${LOGFILE}

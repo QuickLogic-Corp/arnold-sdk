@@ -38,6 +38,7 @@ CXXFLAGS += -std=c++11\
 	-I${PULP_SDK_HOME}/install/include/io\
 	-I${PULP_SDK_HOME}/install/include\
 	-I${PULP_SDK_HOME}/pulp-rt/include\
+	-I${PULP_SDK_HOME}/pulp-rt/archi/include\
 	-include fconfig.h\
 	-I. -I./third_party/gemmlowp -I./third_party/flatbuffers/include -I./third_party/ruy -I./third_party/kissfft
 CCFLAGS +=  -std=c11\
