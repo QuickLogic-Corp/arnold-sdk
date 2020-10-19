@@ -127,13 +127,13 @@ run_${EXAMPLE}:	$(PRJ_ROOT)/${EXAMPLE}/make/${EXAMPLE}
 ##########################################################################
 $(PRJ_ROOT)/${EXAMPLE}/make/${EXAMPLE}:	${PRJ_ROOT}/${EXAMPLE} ${TFLM_DIR}/quicklogic-arnold/person_detection_test.cc ${TFLM_DIR}/quicklogic-arnold/fll.cc ${TFLM_DIR}/quicklogic-arnold/gpio.cc\
 																				${TFLM_DIR}/quicklogic-arnold/micro_interpreter.cc ${TFLM_DIR}/quicklogic-arnold/conv.cc\
-																				${TFLM_DIR}/quicklogic-arnold/conv.h
+																				#${TFLM_DIR}/quicklogic-arnold/conv.h
 		echo "## building generated project"
 		echo "* copy arnold specific source files into generated project"
 		cp ${TFLM_DIR}/quicklogic-arnold/person_detection_test.cc ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/micro/examples/person_detection
 		cp ${TFLM_DIR}/quicklogic-arnold/* ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/micro/quicklogic-arnold
 		cp ${TFLM_DIR}/quicklogic-arnold/conv.cc ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/micro/kernels
-		cp ${TFLM_DIR}/quicklogic-arnold/conv.h ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/kernels/internal/reference
+		#cp ${TFLM_DIR}/quicklogic-arnold/conv.h ${PRJ_ROOT}/${EXAMPLE}/make/tensorflow/lite/kernels/internal/reference
 		echo "* make the generated app"
 		make --directory=${PRJ_ROOT}/${EXAMPLE}/make all
 		echo "-------------app built"
