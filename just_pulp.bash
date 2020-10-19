@@ -20,7 +20,7 @@ echo "## Install various generic tools" |& tee --append ${LOGFILE}
 
 echo Y | sudo apt-get install autoconf automake autotools-dev curl\
 	      libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison\
-              flex texinfo gperf libtool patchutils bc zlib1g-dev scons\
+          flex texinfo gperf libtool patchutils bc zlib1g-dev scons\
 	      cmake libftdi1-dev &>> ${LOGFILE}
 
 #
