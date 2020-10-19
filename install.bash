@@ -1,9 +1,12 @@
 #!/bin bash
 
+set -e
+#############################################
 #
 # Script to install pulp tool chain
 #
-# make bsolute, otherwise parts end up in the subdirectories
+#############################################
+# make absolute, otherwise parts end up in the subdirectories
 LOGFILE=${PWD}/install.log
 
 echo "Arnold tool chain installation" |& tee ${LOGFILE}
@@ -162,6 +165,11 @@ if [ ${steps["pulp-builder"]}  == "true" ]; then
 	echo "-------------------------./scripts/build-runtime" |& tee --append ${LOGFILE}
 	./scripts/build-runtime &>> ${LOGFILE}
 	popd &>> ${LOGFILE}
+	echo "----------------------sdk-setup.sh" |& tee --append ${LOGFILE}
+	source sdk-setup.sh &>> ${LOGFILE}
+	export PULPRT_HOME=$PWD/pulp-rules
+	popd &>> ${LOGFILE}
+	
 	#
 	# Install runtime examples
 	#
@@ -174,6 +182,13 @@ if [ ${steps["pulp-builder"]}  == "true" ]; then
 	#
 	# Install patches (overrides that we have not upstreamed)
 	#
+	pushd pulp-builder &>> ${LOGFILE}
+	echo "----------------------scripts/clean" |& tee --append ${LOGFILE}
+	source ./scripts/clean &>> ${LOGFILE}
+	echo "-----------------------./scripts/build-runtime" |& tee --append ${LOGFILE}
+	./scripts/build-runtime &>> ${LOGFILE}
+	popd &>> ${LOGFILE}
+	
 	echo "---------------------------install patches" |& tee --append ${LOGFILE}
 	pushd patches &>> ${LOGFILE}
 	bash patch.bash |& tee --append ${LOGFILE}
