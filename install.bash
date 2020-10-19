@@ -228,3 +228,5 @@ cd pulp-runtime-examples/hello &>> ${LOGFILE}
 
 echo "* make all" |& tee --append ${LOGFILE}
 make all &>> ${LOGFILE}
+
+echo "Arnold install completed successfully" |& tee --append ${LOGFILE}
