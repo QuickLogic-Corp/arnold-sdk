@@ -160,11 +160,10 @@ if [ ${steps["pulp-builder"]}  == "true" ]; then
 	git checkout arnold &>> ${LOGFILE}
 	source configs/arnold.sh &>> ${LOGFILE}
 	source configs/board.sh &>> ${LOGFILE}
-	echo "-------------------------./scripts/update-runtime" |& tee --append ${LOGFILE}
+	echo "----------------------./scripts/update-runtime" |& tee --append ${LOGFILE}
 	./scripts/update-runtime &>> ${LOGFILE}
-	echo "-------------------------./scripts/build-runtime" |& tee --append ${LOGFILE}
+	echo "----------------------./scripts/build-runtime" |& tee --append ${LOGFILE}
 	./scripts/build-runtime &>> ${LOGFILE}
-	popd &>> ${LOGFILE}
 	echo "----------------------sdk-setup.sh" |& tee --append ${LOGFILE}
 	source sdk-setup.sh &>> ${LOGFILE}
 	export PULPRT_HOME=$PWD/pulp-rules
@@ -183,19 +182,19 @@ if [ ${steps["pulp-builder"]}  == "true" ]; then
 	# Install patches (overrides that we have not upstreamed)
 	#
 	pushd pulp-builder &>> ${LOGFILE}
-	echo "----------------------scripts/clean" |& tee --append ${LOGFILE}
+	echo "scripts/clean" |& tee --append ${LOGFILE}
 	source ./scripts/clean &>> ${LOGFILE}
-	echo "-----------------------./scripts/build-runtime" |& tee --append ${LOGFILE}
+	echo "----------------------./scripts/build-runtime" |& tee --append ${LOGFILE}
 	./scripts/build-runtime &>> ${LOGFILE}
 	popd &>> ${LOGFILE}
 	
-	echo "---------------------------install patches" |& tee --append ${LOGFILE}
+	echo "----------------------install patches" |& tee --append ${LOGFILE}
 	pushd patches &>> ${LOGFILE}
 	bash patch.bash |& tee --append ${LOGFILE}
 	popd &>> ${LOGFILE}
+	
 
 	pushd pulp-builder &>> ${LOGFILE}
-
 	echo "----------------------sdk-setup.sh" |& tee --append ${LOGFILE}
 	source sdk-setup.sh &>> ${LOGFILE}
 	export PULPRT_HOME=$PWD/pulp-rules
