@@ -1,6 +1,5 @@
 #!/bin bash
 
-set -e
 #############################################
 #
 # Script to install pulp tool chain
@@ -94,6 +93,7 @@ done
 # Install various generic tools
 #
 ######################################
+set -e
 
 echo "## Install various generic tools" |& tee --append ${LOGFILE}
 
