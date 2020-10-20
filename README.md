@@ -25,7 +25,7 @@ cd tflu-apps/person-detection
 make
 ~~~
 
-If the RIS5CY toolchain is already installed use:
+If the RI5CY toolchain is already installed use:
 ~~~
 git clone https://github.com/QuickLogic-Corp/arnold-sdk.git
 cd arnold-sdk
@@ -33,4 +33,52 @@ bash install.bash   						# check that you see "Arnold install completed success
 source setup-pulp.bash						# setup environment to run pulp build system
 cd tflu-apps/person-detection
 make
+~~~
+## Configure environment in each shell
+Various environment variables must be present for the pulp tools to operate correctly.  Thes are set by sourcing setup-pulp.bash:
+~~~
+source setup-pulp.bash
+~~~
+## Quick test
+The arnold-sdk has two tflu-apps.  A good way to check your setup is by running them.
+### Person detection
+~~~
+cd tflu-apps/person-detection
+make
+~~~
+This will download some more files, generate the person_detection_test project, make the person_detection_test binary and download it.  If all goes well,
+you will see a message that says: "Waiting for notification from boot code".  This means that arnold is waiting for a reset pulse, so push the reset switch towards the top of the Salinas board, and then set it to the middle position.  You should see:
+~~~
+Received for notification from boot code
+Stopped core
+Loading binaries
+...
+Starting execution
+...
+Ran successfully
+
+1/1 tests passed
+---ALL TESTS PASSED---
+
+Detected end of application, exiting with status: 0
+~~~
+### hw_standalone (accelerated convolution using eFPGA)
+~~~
+cd tflu-apps/hw_standalone
+make all run
+~~~
+This will compile some files and download the resulting binary. If all goes well,
+you will see a message that says: "Waiting for notification from boot code".  This means that arnold is waiting for a reset pulse, so push the reset switch towards the top of the Salinas board, and then set it to the middle position.  You should see:
+~~~
+Received for notification from boot code
+Stopped core
+Loading binaries
+...
+Starting execution
+...
+***Test data from data9.h
+...
+****All data passed!
+Detected end of application, exiting with status: 0
+~~~
 ~~~
