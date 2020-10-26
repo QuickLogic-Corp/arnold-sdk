@@ -157,7 +157,7 @@ printf("Initializing FLL (fll: %d)\n", fll);
 printf("Priming FLL in open loop (fll: %d)\n", fll);
     fll_reg_integrator_t reg_int = { .raw = hal_fll_integrator_get(fll) };
 
-  #if PULP_CHIP == CHIP_QUENTIN || PULP_CHIP == CHIP_KERBIN
+  #if PULP_CHIP == CHIP_QUENTIN || PULP_CHIP == CHIP_KERBIN || PULP_CHIP == CHIPC_ARNOLD
     // TODO don't know how to choose the right, 332 is too agressive for
     // quentin and the fll is never converging
     reg_int.state_int_part = 100;

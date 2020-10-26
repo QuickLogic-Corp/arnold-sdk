@@ -18,7 +18,7 @@
 
 
 #include "result.h"
-#include "data9.h"
+#include "data.h"
 
 #define REFCLK 32660
 int spow2 (int exp) {
@@ -82,15 +82,18 @@ int main()
   signed int f1,f2,f3,f4,f5,f6,f7,f8;
   unsigned int s1,s2,s3,s4,s5,s6,s7,s8;
   int print_on, debug_pixel, skip;
-  
 
-  printf("Attempted to program FLL0 %d Hz\n",prog_fll(0,28000,2));  // 402 MHz
-  printf("Attempted to program FLL1 %d Hz\n",prog_fll(1,6100,3));   //50 MHz
-  printf("Attempted to program FLL2 %d Hz\n",prog_fll(2,1200,3));  // 61 MHs
+  print_on = 0;
+  skip = 0;
+  k = 6100;
+  prog_fll(0,20000,2);
+  printf("Attempted to program FLL0 %d Hz\n",prog_fll(0,28000,2));  // 456
+  //    printf("Attempted to program FLL1 %d Hz\n",prog_fll(1,6100,3));   //50 MHz
+  printf("Attempted to program FLL2 %d Hz\n",prog_fll(2,k,3));  // 6100 = 50MHz
 
   printf("\n***Test data from %s\n\n",testcase);
   
-  print_on = 0;
+  
   for (i = 0; i < sizeof(result_base)/4; i++)
     result_base[i] = 0xdeadbeef;
   static unsigned int *tmp ;
@@ -126,7 +129,7 @@ int main()
   apb->padfunc0 = 0xaaaaaaaa; //0xaaa82aaa;  // gpio 15-00 from efpga .. uart
   apb->padfunc1 = 0xaaaaaaaa;  // gpio 31-16 from efpga
 
-  apb->fpga_reset = 1;
+  apb->fpga_reset = 0;
   apb->fpga_reset = 0xF;
   
   apb->fpga_gate  = 0xFFFF;
@@ -159,24 +162,15 @@ int main()
   printf("Result_base  = 0x%05x (%08x)\n", fpga->result_base,result_base);
   printf("Expect       = (%08x)\n",expect);  
 
-  
-  elapsed_clocks = fpga->clocks;
+
   fpga->control = 1;  // start 2dconv
     
   while (fpga->control & 0x1) { } // wait till start is cleared
 
-  printf ("Elapsed Clocks = %d - %d\n",fpga->clocks,elapsed_clocks );
-  printf ("fll0 = %d, fll1 = %d, fll2= %d\n",
-	  *(unsigned int*)0x1a100000,
-	  *(unsigned int*)0x1a100010,
-	  *(unsigned int*)0x1a100020);
-  printf ("0 = %x, 1 = %x, 2= %x\n",
-	  *(unsigned int*)0x1a100004,
-	  *(unsigned int*)0x1a100014,
-	  *(unsigned int*)0x1a100024);
+  printf ("Elapsed Clocks = %d \n",fpga->clocks );
 
   j = 0;
-  tmp = expect;
+  tmp = (unsigned int*)expect;
   for (i = 0; i < result_len ; i++) {
     if (result_base[i] != tmp[i]) {
       j = j + 1;
@@ -191,6 +185,40 @@ int main()
     printf("****All data passed!\n");
   else
     printf("**** %d mismatches detected -- Test Failed\n",j);
+
+  if (skip) {
+    while (j == 0) {
+      k += 300;
+      printf("Attempted to program FLL2 %d Hz\n",prog_fll(2,k,3));  // 61 MHs
+      printf (" Running again\n");
+
+  
+      fpga->control = 1;  // start 2dconv
+    
+      while (fpga->control & 0x1) { } // wait till start is cleared
+
+      printf ("Elapsed Clocks = %d \n",fpga->clocks );
+
+
+      j = 0;
+      tmp = expect;
+      for (i = 0; i < result_len ; i++) {
+	if (result_base[i] != tmp[i]) {
+	  j = j + 1;
+	  if (print_on) {
+	    printf ("post Result[0x%4x] = 0x%08x exp = 0x%08x\n",
+		    i,result_base[i],tmp[i]);
+	  }
+	}
+      }
+
+      if (j == 0)
+	printf("****All data passed!\n");
+      else
+	printf("**** %d mismatches detected -- Test Failed\n",j);
+    }
+  }
+
 
   return 0;
 }
