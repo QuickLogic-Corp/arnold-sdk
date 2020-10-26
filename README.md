@@ -1,5 +1,8 @@
 # arnold-sdk
 Repo to support evaluations using arnold evaluation kit
+## Hardware
+  * The Salinas evaluation board,  https://github.com/QuickLogic-Corp/Salinas, is the physical hardware that the arnold-sdk uses
+  * The Olimex ARM-USB-TINY JTAG adaptor is required to program and debug the arnold device
 ## Installing the toolchains
 There are several steps to a complete installation:
 1. command to clone the arnold-sdk repository, then install various other elements
