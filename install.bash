@@ -210,6 +210,7 @@ if [ ${steps["tensorflow"]}  == "true" ]; then
 	echo "----------------------clone tensorflow" |& tee --append ${LOGFILE}
 	pushd tensorflow &>> ${LOGFILE}
 	git submodule update --init --recursive &>> ${LOGFILE}
+	git checkout master &>> ${LOGFILE}
 	popd &>> ${LOGFILE}
 fi
 
