@@ -38,35 +38,36 @@ int prog_fll(int fll, int mult, int div) {
     (div << 26) | (0xf0 << 16) | mult; // 2x RefClock enable FLL
   switch (fll) {
   case 0:
-    *(unsigned int*)0x1a100008 = 0x42004107; // select ref clock as input
+    *(unsigned int*)0x1a100008 = 0x00501907; // select ref clock as input
     *(unsigned int*)0x1a100004 = i;
-    printf("FLL0 m=%d, div= %d %08x %08x %08x %08x\n",mult,div,
-	   *(unsigned int*)0x1a100000,
-	   *(unsigned int*)0x1a100004,
-	   *(unsigned int*)0x1a100008,
-	   *(unsigned int*)0x1a10000C);
+    printf("FLL0 m=%d (%x), div= %d %08x %08x %08x %08x\n",mult,mult,div, 
+     	   *(unsigned int*)0x1a100000, 
+     	   *(unsigned int*)0x1a100004, 
+     	   *(unsigned int*)0x1a100008, 
+     	   *(unsigned int*)0x1a10000C); 
     mult_out = *(unsigned int*)0x1a100000;
     break;
   case 1:
     *(unsigned int*)0x1a100018 = 0x42004107; // select ref clock as input
     *(unsigned int*)0x1a100014 = i;
-    printf("FLL1=1 m=%d, div= %d %08x %08x %08x %08x\n",mult,div,
-	   *(unsigned int*)0x1a100010,
-	   *(unsigned int*)0x1a100014,
-	   *(unsigned int*)0x1a100018,
-	   *(unsigned int*)0x1a10001C);
+    printf("FLL1 m=%d (%x), div= %d %08x %08x %08x %08x\n",mult,mult,div, 
+     	   *(unsigned int*)0x1a100010, 
+     	   *(unsigned int*)0x1a100014, 
+     	   *(unsigned int*)0x1a100018, 
+     	   *(unsigned int*)0x1a10001C); 
         mult_out = *(unsigned int*)0x1a100010;
     break;
   case 2:
-    //   *(unsigned int*)0x1a10002C = 0x00808000;
-    *(unsigned int*)0x1a100028 = 0x42004107; // select ref clock as input
+    *(unsigned int*)0x1a10002C = 0x00808000;
+    *(unsigned int*)0x1a100028 = 0x501907; // select ref clock as input
     *(unsigned int*)0x1a100024 = i;
-    printf("FLL2 m=%d, div= %d %08x %08x %08x %08x\n",mult,div,
-	   *(unsigned int*)0x1a100020,
-	   *(unsigned int*)0x1a100024,
-	   *(unsigned int*)0x1a100028,
-	   *(unsigned int*)0x1a10002C);
-            mult_out = *(unsigned int*)0x1a100020;
+
+    printf("FLL2 m=%d (%x), div= %d %08x %08x %08x %08x\n",mult,mult,div,
+     	   *(unsigned int*)0x1a100020, 
+     	   *(unsigned int*)0x1a100024, 
+     	   *(unsigned int*)0x1a100028, 
+     	   *(unsigned int*)0x1a10002C); 
+    mult_out = *(unsigned int*)0x1a100020;
     break;
   }
   ret  = (REFCLK * (mult_out+1))/spow2(div?div-1:0);
@@ -88,7 +89,7 @@ int main()
   k = 6100;
   prog_fll(0,20000,2);
   printf("Attempted to program FLL0 %d Hz\n",prog_fll(0,28000,2));  // 456
-  //    printf("Attempted to program FLL1 %d Hz\n",prog_fll(1,6100,3));   //50 MHz
+  printf("Attempted to program FLL1 %d Hz\n",prog_fll(1,6100,3));   //50 MHz
   printf("Attempted to program FLL2 %d Hz\n",prog_fll(2,k,3));  // 6100 = 50MHz
 
   printf("\n***Test data from %s\n\n",testcase);
@@ -168,7 +169,6 @@ int main()
   while (fpga->control & 0x1) { } // wait till start is cleared
 
   printf ("Elapsed Clocks = %d \n",fpga->clocks );
-
   j = 0;
   tmp = (unsigned int*)expect;
   for (i = 0; i < result_len ; i++) {
