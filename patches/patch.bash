@@ -7,5 +7,8 @@
 
 # fll-v1.c needs updating
 echo "in patch.bash"
+cp bridge-makefile ../pulp-builder/pulp-rt/pulp-debug-bridge/Makefile
 cp fll-v1.c ../pulp-builder/pulp-rt/kernel/
-cp implem.h ../pulp-builder/install/include/pmsis/implem/ || (echo "copy failed"; exit 1)
+cp bridge.c ../pulp-builder/pulp-rt/kernel/
+cp rt_freq.h ../pulp-builder/pulp-rt/include/rt/
+cp implem.h ../pulp-builder/pulp-rt/include/pmsis/implem/ || (echo "copy failed"; exit 1)

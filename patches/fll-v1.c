@@ -135,7 +135,6 @@ unsigned int __rt_fll_init(int fll)
 #endif
 */	
   rt_trace(RT_TRACE_INIT, "Initializing FLL (fll: %d)\n", fll);
-printf("Initializing FLL (fll: %d)\n", fll);
   
   fll_reg_conf1_t reg1 = { .raw = hal_fll_conf_reg1_get(fll) };
 
@@ -154,7 +153,6 @@ printf("Initializing FLL (fll: %d)\n", fll);
     // in lock mode faster.
     /* We are in open loop, prime the fll forcing dco input, approx 70 MHz */
     rt_trace(RT_TRACE_INIT, "Priming FLL in open loop (fll: %d)\n", fll);
-printf("Priming FLL in open loop (fll: %d)\n", fll);
     fll_reg_integrator_t reg_int = { .raw = hal_fll_integrator_get(fll) };
 
   #if PULP_CHIP == CHIP_QUENTIN || PULP_CHIP == CHIP_KERBIN || PULP_CHIP == CHIP_ARNOLD
@@ -185,7 +183,6 @@ printf("Priming FLL in open loop (fll: %d)\n", fll);
   __rt_fll_is_on[fll] = 1;
 
   rt_trace(RT_TRACE_INIT, "FLL is locked (fll: %d, freq: %d)\n", fll, freq);
-printf("FLL is locked (fll: %d, freq: %d)\n", fll, freq);
 
   return freq;
 }

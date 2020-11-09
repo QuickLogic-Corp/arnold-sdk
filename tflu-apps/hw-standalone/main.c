@@ -19,60 +19,9 @@
 
 #include "result.h"
 #include "data.h"
+#include "fll.h"
 
-#define REFCLK 32660
-int spow2 (int exp) {
-  int i, ret;
-  ret = 1;
-  if (exp == 0) return ret;
-  else
-    for (i = 0; i < exp; ret = ret * 2, i++);
-  return ret;
-}
 
-int prog_fll(int fll, int mult, int div) {
-  int mult_out;
-  int ret = (REFCLK * (mult+1))/spow2(div?div-1:0);
-  int i;
-  i = 0x80000000 | 
-    (div << 26) | (0xf0 << 16) | mult; // 2x RefClock enable FLL
-  switch (fll) {
-  case 0:
-    *(unsigned int*)0x1a100008 = 0x00501907; // select ref clock as input
-    *(unsigned int*)0x1a100004 = i;
-    printf("FLL0 m=%d (%x), div= %d %08x %08x %08x %08x\n",mult,mult,div, 
-     	   *(unsigned int*)0x1a100000, 
-     	   *(unsigned int*)0x1a100004, 
-     	   *(unsigned int*)0x1a100008, 
-     	   *(unsigned int*)0x1a10000C); 
-    mult_out = *(unsigned int*)0x1a100000;
-    break;
-  case 1:
-    *(unsigned int*)0x1a100018 = 0x42004107; // select ref clock as input
-    *(unsigned int*)0x1a100014 = i;
-    printf("FLL1 m=%d (%x), div= %d %08x %08x %08x %08x\n",mult,mult,div, 
-     	   *(unsigned int*)0x1a100010, 
-     	   *(unsigned int*)0x1a100014, 
-     	   *(unsigned int*)0x1a100018, 
-     	   *(unsigned int*)0x1a10001C); 
-        mult_out = *(unsigned int*)0x1a100010;
-    break;
-  case 2:
-    *(unsigned int*)0x1a10002C = 0x00808000;
-    *(unsigned int*)0x1a100028 = 0x501907; // select ref clock as input
-    *(unsigned int*)0x1a100024 = i;
-
-    printf("FLL2 m=%d (%x), div= %d %08x %08x %08x %08x\n",mult,mult,div,
-     	   *(unsigned int*)0x1a100020, 
-     	   *(unsigned int*)0x1a100024, 
-     	   *(unsigned int*)0x1a100028, 
-     	   *(unsigned int*)0x1a10002C); 
-    mult_out = *(unsigned int*)0x1a100020;
-    break;
-  }
-  ret  = (REFCLK * (mult_out+1))/spow2(div?div-1:0);
-  return ret;
-}
 
 int main()
 {
@@ -86,14 +35,21 @@ int main()
 
   print_on = 0;
   skip = 0;
-  k = 6100;
+  k = 9155;
   prog_fll(0,20000,2);
-  printf("Attempted to program FLL0 %d Hz\n",prog_fll(0,28000,2));  // 456
-  printf("Attempted to program FLL1 %d Hz\n",prog_fll(1,6100,3));   //50 MHz
-  printf("Attempted to program FLL2 %d Hz\n",prog_fll(2,k,3));  // 6100 = 50MHz
+  prog_fll(0,28000,2);  // 456
+  prog_fll(1,6100,3);   //50 MHz
+  prog_fll(2,k,3);  // 9155 = 75MHz
+  dump_fll(0);
+  dump_fll(1);
+  dump_fll(2);
+
+    //  rt_freq_set(2,50*1000*1000);
 
   printf("\n***Test data from %s\n\n",testcase);
-  
+
+
+
   
   for (i = 0; i < sizeof(result_base)/4; i++)
     result_base[i] = 0xdeadbeef;
@@ -127,7 +83,7 @@ int main()
   apb->fpga_clk = 2; // FLL to CLK0 of FPGA
   programFPGA();
   
-  apb->padfunc0 = 0xaaaaaaaa; //0xaaa82aaa;  // gpio 15-00 from efpga .. uart
+  apb->padfunc0 = 0xaaa82aaa;  // gpio 15-00 from efpga .. uart
   apb->padfunc1 = 0xaaaaaaaa;  // gpio 31-16 from efpga
 
   apb->fpga_reset = 0;
@@ -135,6 +91,7 @@ int main()
   
   apb->fpga_gate  = 0xFFFF;
   fpga->debug_mux = 0x42;
+
   printf("****Debug Mux = %x\n", fpga->debug_mux);
 	 
   result_len = (filters * width * height)/4;
@@ -188,8 +145,9 @@ int main()
 
   if (skip) {
     while (j == 0) {
-      k += 300;
-      printf("Attempted to program FLL2 %d Hz\n",prog_fll(2,k,3));  // 61 MHs
+      k += 122;  // Plus 1 MHz
+      printf("Attempted to program FLL2 %d Hz\n",prog_fll(2,k,3)); 
+//	rt_freq_set(2,k*1000*1000);
       printf (" Running again\n");
 
   

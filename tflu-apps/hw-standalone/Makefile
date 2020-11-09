@@ -1,6 +1,6 @@
 VERBOSE = 1
 PULP_APP = test
-PULP_APP_SRCS = main.c programFPGA.c
+PULP_APP_SRCS = main.c programFPGA.c fll.c
 PULP_CFLAGS = -g
 include $(PULP_SDK_HOME)/install/rules/pulp_rt.mk
 
