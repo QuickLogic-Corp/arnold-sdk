@@ -178,19 +178,22 @@ if [ ${steps["pulp-builder"]}  == "true" ]; then
 	git clone https://github.com/pulp-platform/pulp-runtime-examples.git &>> ${LOGFILE}
 	popd &>> ${LOGFILE}
 
-	#
+ 	#
 	# Install patches (overrides that we have not upstreamed)
 	#
-	pushd pulp-builder &>> ${LOGFILE}
-	echo "scripts/clean" |& tee --append ${LOGFILE}
-	source ./scripts/clean &>> ${LOGFILE}
-	echo "----------------------./scripts/build-runtime" |& tee --append ${LOGFILE}
-	./scripts/build-runtime &>> ${LOGFILE}
-	popd &>> ${LOGFILE}
-	
 	echo "----------------------install patches" |& tee --append ${LOGFILE}
 	pushd patches &>> ${LOGFILE}
 	bash patch.bash |& tee --append ${LOGFILE}
+	popd &>> ${LOGFILE}
+	
+
+	pushd pulp-builder &>> ${LOGFILE}
+	echo "scripts/clean" |& tee --append ${LOGFILE}
+	source ./scripts/clean &>> ${LOGFILE}
+	echo "----------------------./scripts/build-debug-bridge" |& tee --append ${LOGFILE}
+	./scripts/build-debug-bridge &>> ${LOGFILE}
+	echo "----------------------./scripts/build-runtime" |& tee --append ${LOGFILE}
+	./scripts/build-runtime &>> ${LOGFILE}
 	popd &>> ${LOGFILE}
 	
 
