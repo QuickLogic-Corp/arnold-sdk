@@ -50,7 +50,7 @@ int prog_fll(int f, int mult, int div) {
 //	 fll[f].cfg2.raw,
 //	 k.state_int_part,k.state_fract_part
 //	 );
-  ret  = (REFCLK * (mult_out+1))/spow2(div?div-1:0);
+  ret  = (REFCLK * (fll[f].stat.act_mult))/spow2(div?div-1:0);
   return ret;
 }
 
