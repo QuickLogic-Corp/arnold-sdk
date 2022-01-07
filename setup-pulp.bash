@@ -7,7 +7,7 @@
 #
 echo "setup pulp environment"
 pushd pulp-builder
-export PULP_RISCV_GCC_TOOLCHAIN=/opt/riscv
+export PULP_RISCV_GCC_TOOLCHAIN=/opt/pulp-gcc-ubuntu1804-20200913
 source configs/arnold.sh
 source configs/board.sh
 source sdk-setup.sh

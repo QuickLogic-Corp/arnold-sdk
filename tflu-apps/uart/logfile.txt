@@ -1,0 +1,14 @@
+Testing TestInvoke
+Arnold GPIO 5,6= software, GPIO 0 = hardware
+person data.  person score: 248, no person score: 47
+no person data.  person score: 104, no person score: 217
+Ran successfully
+1/1 tests passed
+~~~ALL TESTS PASSED~~~
+Testing TestInvoke
+Arnold GPIO 5,6= software, GPIO 0 = hardware
+person data.  person score: 248, no person score: 47
+no person data.  person score: 104, no person score: 217
+Ran successfully
+1/1 tests passed
+~~~ALL TESTS PASSED~~~

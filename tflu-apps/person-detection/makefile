@@ -1,5 +1,5 @@
 TARGET := quicklogic-arnold
-TARGET_TOOLCHAIN_ROOT := /opt/riscv/bin/
+TARGET_TOOLCHAIN_ROOT := /opt/pulp-gcc-ubuntu1804-20200913/bin/
 TARGET_TOOLCHAIN_PREFIX := riscv32-unknown-elf-
 TENSORFLOWHOME := ../../tensorflow
 
